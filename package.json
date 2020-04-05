@@ -9,7 +9,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/dtroshynski76/redux-test"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.8",

@@ -13,22 +13,16 @@ class App extends React.PureComponent {
 
     // TODO: add footer
     render() {
-        const { signInDialogOpen } = this.props;
-
         return (
             <React.Fragment>
-                <SignIn isOpen={signInDialogOpen} />
+                <SignIn />
                 <Header onLogin={this.handleLogin} displayName={'Donovan'} />
             </React.Fragment>
         );
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        signInDialogOpen: state.dialogs.signIn.isOpen,
-    };
-};
+const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = (dispatch) => ({
     openSignInDialog: () => dispatch(openSignInDialog()),
