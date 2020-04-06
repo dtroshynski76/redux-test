@@ -1,6 +1,8 @@
 import {
     OPEN_SIGN_IN_DIALOG,
     CLOSE_SIGN_IN_DIALOG,
+    OPEN_SIGN_UP_DIALOG,
+    CLOSE_SIGN_UP_DIALOG,
 } from '../actions/dialogActions';
 
 const dialogs = (state = {}, action) => {
@@ -14,6 +16,18 @@ const dialogs = (state = {}, action) => {
         case CLOSE_SIGN_IN_DIALOG:
             return Object.assign({}, state, {
                 signIn: {
+                    isOpen: false,
+                },
+            });
+        case OPEN_SIGN_UP_DIALOG:
+            return Object.assign({}, state, {
+                signUp: {
+                    isOpen: true,
+                },
+            });
+        case CLOSE_SIGN_UP_DIALOG:
+            return Object.assign({}, state, {
+                signUp: {
                     isOpen: false,
                 },
             });

@@ -18,12 +18,20 @@ const styles = {
     title: {
         flexGrow: 1,
     },
+    signUpButton: {
+        marginRight: '5px',
+    },
 };
 
 class Header extends React.PureComponent {
     handleLogin = () => {
         const { onLogin } = this.props;
         onLogin();
+    };
+
+    handleSignUp = () => {
+        const { onSignUp } = this.props;
+        onSignUp();
     };
 
     render() {
@@ -46,6 +54,14 @@ class Header extends React.PureComponent {
                         <Typography variant="h6" className={classes.title}>
                             {`Welcome, ${greetingName}!`}
                         </Typography>
+                        <Button
+                            className={classes.signUpButton}
+                            color="inherit"
+                            variant="text"
+                            onClick={this.handleSignUp}
+                        >
+                            Sign Up
+                        </Button>
                         <Button
                             color="inherit"
                             variant="outlined"
@@ -75,6 +91,11 @@ Header.propTypes = {
      * Callback function that fires when the user clicks the "Login" button
      */
     onLogin: PropTypes.func.isRequired,
+
+    /**
+     * Callback function that fires when the user clicks the "Sign Up" button
+     */
+    onSignUp: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(Header);
