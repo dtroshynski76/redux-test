@@ -7,7 +7,7 @@
  * // find the value in the object 'state' at the location 'foo.bar.baz'; return empty array if not found
  * getJS(state, 'foo.bar.baz', []);
  */
-export function getJS(state, location = '', fallbackValue = {}) {
+export function getJS(fallbackValue, state, location = '') {
     const locationArray = location.split('.');
 
     if (locationArray.length < 1) {

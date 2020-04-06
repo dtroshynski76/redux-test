@@ -10,21 +10,23 @@ import FormGroup from '@material-ui/core/FormGroup';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { addUser } from '../../redux/actions/userActions';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import { closeSignInDialog } from '../../redux/actions/dialogActions';
+import { closeSignUpDialog } from '../../redux/actions/dialogActions';
 
 const styles = {};
 
 const initState = {
     username: '',
     password: '',
+    confirmPassword: '',
     showPassword: false,
 };
 
-class SignIn extends React.PureComponent {
+class SignUp extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -32,33 +34,23 @@ class SignIn extends React.PureComponent {
     }
 
     handleCancel = () => {
-        const { closeSignInDialog } = this.props;
+        const { closeSignUpDialog } = this.props;
 
         this.setState(initState);
-        closeSignInDialog();
+        closeSignUpDialog();
     };
 
-    handleSignIn = () => {
+    handleSignUp = () => {
         const { username, password } = this.state;
-        const { validUsers } = this.props;
+        const { addUser } = this.props;
 
-        const hashedPassword = CryptoJS.SHA256(password).toString(
-            CryptoJS.enc.Hex
-        );
+        const passwordHash = CryptoJS.SHA256(password);
 
-        const isValidCredentials = validUsers.find(
-            (user) =>
-                user.username === username && user.password === hashedPassword
-        );
-
-        if (isValidCredentials) {
-            console.log(
-                `signed in with username '${username}' and password '${password}'`
-            );
-            this.handleCancel();
-        } else {
-            console.log('invalid username or password');
-        }
+        addUser({
+            username,
+            password: passwordHash.toString(CryptoJS.enc.Hex),
+        });
+        this.handleCancel();
     };
 
     handleClickShowPassword = () => {
@@ -69,10 +61,16 @@ class SignIn extends React.PureComponent {
 
     render() {
         const { isOpen } = this.props;
-        const { username, password, showPassword } = this.state;
+        const {
+            username,
+            password,
+            confirmPassword,
+            showPassword,
+        } = this.state;
 
         const usernameValid = username.length > 0;
         const passwordValid = password.length >= 8;
+        const confirmPasswordValid = password === confirmPassword;
 
         return (
             <Dialog
@@ -80,10 +78,10 @@ class SignIn extends React.PureComponent {
                 onClose={this.handleCancel}
                 aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">Sign In</DialogTitle>
+                <DialogTitle id="form-dialog-title">Sign Up</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Please enter your username and password.
+                        Please enter a username and password.
                     </DialogContentText>
                     <TextField
                         value={username}
@@ -124,6 +122,26 @@ class SignIn extends React.PureComponent {
                                 : ''
                         }
                     />
+                    <TextField
+                        value={confirmPassword}
+                        onChange={(e) =>
+                            this.setState({
+                                confirmPassword: e.target.value,
+                            })
+                        }
+                        margin="dense"
+                        id="confirmPassword"
+                        label="Confirm Password"
+                        type={showPassword ? 'text' : 'password'}
+                        variant="outlined"
+                        fullWidth
+                        error={!confirmPasswordValid}
+                        helperText={
+                            !confirmPasswordValid
+                                ? 'Passwords do not match'
+                                : ''
+                        }
+                    />
                     <FormGroup row>
                         <FormControlLabel
                             control={
@@ -142,12 +160,18 @@ class SignIn extends React.PureComponent {
                         Cancel
                     </Button>
                     <Button
-                        onClick={this.handleSignIn}
+                        onClick={this.handleSignUp}
                         color="primary"
                         variant="contained"
-                        disabled={!(usernameValid && passwordValid)}
+                        disabled={
+                            !(
+                                usernameValid &&
+                                passwordValid &&
+                                confirmPasswordValid
+                            )
+                        }
                     >
-                        Sign In
+                        Sign Up
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -155,7 +179,7 @@ class SignIn extends React.PureComponent {
     }
 }
 
-SignIn.propTypes = {
+SignUp.propTypes = {
     /**
      * from redux store; defines whether the dialog is open or not
      */
@@ -164,26 +188,27 @@ SignIn.propTypes = {
     /**
      * redux action
      */
-    closeSignInDialog: PropTypes.func.isRequired,
+    closeSignUpDialog: PropTypes.func.isRequired,
 
     /**
-     * from redux store; array of valid user objects, each with a 'username' and 'password' field
+     * redux action to add a new user
+     * takes a single object with 'username' and 'password' properties
      */
-    validUsers: PropTypes.array.isRequired
+    addUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
     return {
-        isOpen: getJS(false, state, 'dialogs.signIn.isOpen'),
-        validUsers: getJS([], state, 'userInfo.validUsers'),
+        isOpen: getJS(false, state, 'dialogs.signUp.isOpen'),
     };
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    closeSignInDialog: () => dispatch(closeSignInDialog()),
+    closeSignUpDialog: () => dispatch(closeSignUpDialog()),
+    addUser: (userObject) => dispatch(addUser(userObject)),
 });
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withStyles(styles)(SignIn));
+)(withStyles(styles)(SignUp));
