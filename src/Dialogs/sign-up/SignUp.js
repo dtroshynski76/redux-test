@@ -21,8 +21,11 @@ const styles = {};
 
 const initState = {
     username: '',
+    touchedUsernameField: false,
     password: '',
+    touchedPasswordField: false,
     confirmPassword: '',
+    touchedConfirmPasswordField: false,
     showPassword: false,
 };
 
@@ -66,6 +69,9 @@ class SignUp extends React.PureComponent {
             password,
             confirmPassword,
             showPassword,
+            touchedUsernameField,
+            touchedPasswordField,
+            touchedConfirmPasswordField,
         } = this.state;
 
         const usernameValid = username.length > 0;
@@ -88,6 +94,7 @@ class SignUp extends React.PureComponent {
                         onChange={(e) =>
                             this.setState({
                                 username: e.target.value,
+                                touchedUsernameField: true,
                             })
                         }
                         autoFocus
@@ -97,7 +104,7 @@ class SignUp extends React.PureComponent {
                         type="text"
                         variant="outlined"
                         fullWidth
-                        error={!usernameValid}
+                        error={touchedUsernameField && !usernameValid}
                         helperText={
                             !usernameValid ? 'Must enter a username' : ''
                         }
@@ -107,6 +114,7 @@ class SignUp extends React.PureComponent {
                         onChange={(e) =>
                             this.setState({
                                 password: e.target.value,
+                                touchedPasswordField: true,
                             })
                         }
                         margin="dense"
@@ -115,7 +123,7 @@ class SignUp extends React.PureComponent {
                         type={showPassword ? 'text' : 'password'}
                         variant="outlined"
                         fullWidth
-                        error={!passwordValid}
+                        error={touchedPasswordField && !passwordValid}
                         helperText={
                             !passwordValid
                                 ? 'Password must be at least 8 characters'
@@ -127,6 +135,7 @@ class SignUp extends React.PureComponent {
                         onChange={(e) =>
                             this.setState({
                                 confirmPassword: e.target.value,
+                                touchedConfirmPasswordField: true,
                             })
                         }
                         margin="dense"
@@ -135,7 +144,9 @@ class SignUp extends React.PureComponent {
                         type={showPassword ? 'text' : 'password'}
                         variant="outlined"
                         fullWidth
-                        error={!confirmPasswordValid}
+                        error={
+                            touchedConfirmPasswordField && !confirmPasswordValid
+                        }
                         helperText={
                             !confirmPasswordValid
                                 ? 'Passwords do not match'

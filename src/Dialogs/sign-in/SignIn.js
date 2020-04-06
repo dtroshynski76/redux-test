@@ -20,7 +20,9 @@ const styles = {};
 
 const initState = {
     username: '',
+    touchedUsernameField: false,
     password: '',
+    touchedPasswordField: false,
     showPassword: false,
 };
 
@@ -69,7 +71,13 @@ class SignIn extends React.PureComponent {
 
     render() {
         const { isOpen } = this.props;
-        const { username, password, showPassword } = this.state;
+        const {
+            username,
+            password,
+            showPassword,
+            touchedUsernameField,
+            touchedPasswordField,
+        } = this.state;
 
         const usernameValid = username.length > 0;
         const passwordValid = password.length >= 8;
@@ -90,6 +98,7 @@ class SignIn extends React.PureComponent {
                         onChange={(e) =>
                             this.setState({
                                 username: e.target.value,
+                                touchedUsernameField: true,
                             })
                         }
                         autoFocus
@@ -99,7 +108,7 @@ class SignIn extends React.PureComponent {
                         type="text"
                         variant="outlined"
                         fullWidth
-                        error={!usernameValid}
+                        error={touchedUsernameField && !usernameValid}
                         helperText={
                             !usernameValid ? 'Must enter a username' : ''
                         }
@@ -109,6 +118,7 @@ class SignIn extends React.PureComponent {
                         onChange={(e) =>
                             this.setState({
                                 password: e.target.value,
+                                touchedPasswordField: true,
                             })
                         }
                         margin="dense"
@@ -117,7 +127,7 @@ class SignIn extends React.PureComponent {
                         type={showPassword ? 'text' : 'password'}
                         variant="outlined"
                         fullWidth
-                        error={!passwordValid}
+                        error={touchedPasswordField && !passwordValid}
                         helperText={
                             !passwordValid
                                 ? 'Password must be at least 8 characters'
@@ -169,7 +179,7 @@ SignIn.propTypes = {
     /**
      * from redux store; array of valid user objects, each with a 'username' and 'password' field
      */
-    validUsers: PropTypes.array.isRequired
+    validUsers: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = (state) => {
