@@ -2,6 +2,7 @@ import React from 'react';
 import CryptoJS from 'crypto-js';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -12,11 +13,16 @@ import { withStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import { setUsername } from '../../redux/actions/userActions';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { closeSignInDialog } from '../../redux/actions/dialogActions';
 
-const styles = {};
+const styles = () => ({
+    alert: {
+        marginBottom: '5px',
+    },
+});
 
 const initState = {
     username: '',
@@ -24,6 +30,7 @@ const initState = {
     password: '',
     touchedPasswordField: false,
     showPassword: false,
+    invalidCredentials: false,
 };
 
 class SignIn extends React.PureComponent {
@@ -42,7 +49,7 @@ class SignIn extends React.PureComponent {
 
     handleSignIn = () => {
         const { username, password } = this.state;
-        const { validUsers } = this.props;
+        const { validUsers, setUsername } = this.props;
 
         const hashedPassword = CryptoJS.SHA256(password).toString(
             CryptoJS.enc.Hex
@@ -57,9 +64,13 @@ class SignIn extends React.PureComponent {
             console.log(
                 `signed in with username '${username}' and password '${password}'`
             );
+            setUsername(username);
             this.handleCancel();
         } else {
             console.log('invalid username or password');
+            this.setState({
+                invalidCredentials: true,
+            });
         }
     };
 
@@ -70,35 +81,42 @@ class SignIn extends React.PureComponent {
     };
 
     render() {
-        const { isOpen } = this.props;
+        const { classes, isOpen } = this.props;
         const {
             username,
             password,
             showPassword,
             touchedUsernameField,
             touchedPasswordField,
+            invalidCredentials,
         } = this.state;
 
         const usernameValid = username.length > 0;
         const passwordValid = password.length >= 8;
 
         return (
-            <Dialog
-                open={isOpen}
-                onClose={this.handleCancel}
-                aria-labelledby="form-dialog-title"
-            >
-                <DialogTitle id="form-dialog-title">Sign In</DialogTitle>
+            <Dialog open={isOpen} onClose={this.handleCancel}>
+                <DialogTitle>Sign In</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Please enter your username and password.
                     </DialogContentText>
+                    {invalidCredentials && (
+                        <Alert
+                            severity="error"
+                            variant="outlined"
+                            className={classes.alert}
+                        >
+                            Invalid username or password
+                        </Alert>
+                    )}
                     <TextField
                         value={username}
                         onChange={(e) =>
                             this.setState({
                                 username: e.target.value,
                                 touchedUsernameField: true,
+                                invalidCredentials: false,
                             })
                         }
                         autoFocus
@@ -119,6 +137,7 @@ class SignIn extends React.PureComponent {
                             this.setState({
                                 password: e.target.value,
                                 touchedPasswordField: true,
+                                invalidCredentials: false,
                             })
                         }
                         margin="dense"
@@ -180,6 +199,11 @@ SignIn.propTypes = {
      * from redux store; array of valid user objects, each with a 'username' and 'password' field
      */
     validUsers: PropTypes.array.isRequired,
+
+    /**
+     * redux action; sets the currently logged in users' username
+     */
+    setUsername: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -191,6 +215,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     closeSignInDialog: () => dispatch(closeSignInDialog()),
+    setUsername: (username) => dispatch(setUsername(username)),
 });
 
 export default connect(

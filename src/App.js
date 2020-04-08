@@ -30,7 +30,6 @@ class App extends React.PureComponent {
                 <Header
                     onLogin={this.handleLogin}
                     onSignUp={this.handleSignUp}
-                    displayName={'Donovan'}
                 />
             </React.Fragment>
         );

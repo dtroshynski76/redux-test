@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
+import { getJS } from '../constants/functions';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -35,9 +37,9 @@ class Header extends React.PureComponent {
     };
 
     render() {
-        const { classes, displayName } = this.props;
+        const { classes, signedInUsername } = this.props;
 
-        const greetingName = displayName ? displayName : 'visitor';
+        const greetingName = signedInUsername ? signedInUsername : 'visitor';
 
         return (
             <div className={classes.root}>
@@ -67,7 +69,7 @@ class Header extends React.PureComponent {
                             variant="outlined"
                             onClick={this.handleLogin}
                         >
-                            Login
+                            Sign In
                         </Button>
                     </Toolbar>
                 </AppBar>
@@ -83,11 +85,6 @@ Header.propTypes = {
     classes: PropTypes.object.isRequired,
 
     /**
-     * Name to display on the header bar
-     */
-    displayName: PropTypes.string,
-
-    /**
      * Callback function that fires when the user clicks the "Login" button
      */
     onLogin: PropTypes.func.isRequired,
@@ -96,6 +93,22 @@ Header.propTypes = {
      * Callback function that fires when the user clicks the "Sign Up" button
      */
     onSignUp: PropTypes.func.isRequired,
+
+    /**
+     * from redux - displays username in the header bar
+     */
+    signedInUsername: PropTypes.string,
 };
 
-export default withStyles(styles)(Header);
+const mapStateToProps = (state) => {
+    return {
+        signedInUsername: getJS(false, state, 'userInfo.username'),
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withStyles(styles)(Header));

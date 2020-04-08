@@ -79,12 +79,8 @@ class SignUp extends React.PureComponent {
         const confirmPasswordValid = password === confirmPassword;
 
         return (
-            <Dialog
-                open={isOpen}
-                onClose={this.handleCancel}
-                aria-labelledby="form-dialog-title"
-            >
-                <DialogTitle id="form-dialog-title">Sign Up</DialogTitle>
+            <Dialog open={isOpen} onClose={this.handleCancel}>
+                <DialogTitle>Sign Up</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Please enter a username and password.
