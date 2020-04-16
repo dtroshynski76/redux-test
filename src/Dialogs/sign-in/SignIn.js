@@ -34,6 +34,28 @@ const initState = {
 };
 
 class SignIn extends React.PureComponent {
+    static propTypes = {
+        /**
+         * from redux store; defines whether the dialog is open or not
+         */
+        isOpen: PropTypes.bool,
+
+        /**
+         * redux action
+         */
+        closeSignInDialog: PropTypes.func.isRequired,
+
+        /**
+         * from redux store; array of valid user objects, each with a 'username' and 'password' field
+         */
+        validUsers: PropTypes.array.isRequired,
+
+        /**
+         * redux action; sets the currently logged in users' username
+         */
+        setUsername: PropTypes.func.isRequired
+    };
+
     constructor(props) {
         super(props);
 
@@ -183,28 +205,6 @@ class SignIn extends React.PureComponent {
         );
     }
 }
-
-SignIn.propTypes = {
-    /**
-     * from redux store; defines whether the dialog is open or not
-     */
-    isOpen: PropTypes.bool,
-
-    /**
-     * redux action
-     */
-    closeSignInDialog: PropTypes.func.isRequired,
-
-    /**
-     * from redux store; array of valid user objects, each with a 'username' and 'password' field
-     */
-    validUsers: PropTypes.array.isRequired,
-
-    /**
-     * redux action; sets the currently logged in users' username
-     */
-    setUsername: PropTypes.func.isRequired,
-};
 
 const mapStateToProps = (state) => {
     return {

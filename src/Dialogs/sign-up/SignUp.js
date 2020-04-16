@@ -30,6 +30,24 @@ const initState = {
 };
 
 class SignUp extends React.PureComponent {
+    static propTypes = {
+        /**
+         * from redux store; defines whether the dialog is open or not
+         */
+        isOpen: PropTypes.bool,
+    
+        /**
+         * redux action
+         */
+        closeSignUpDialog: PropTypes.func.isRequired,
+    
+        /**
+         * redux action to add a new user
+         * takes a single object with 'username' and 'password' properties
+         */
+        addUser: PropTypes.func.isRequired,
+    };
+
     constructor(props) {
         super(props);
 
@@ -185,24 +203,6 @@ class SignUp extends React.PureComponent {
         );
     }
 }
-
-SignUp.propTypes = {
-    /**
-     * from redux store; defines whether the dialog is open or not
-     */
-    isOpen: PropTypes.bool,
-
-    /**
-     * redux action
-     */
-    closeSignUpDialog: PropTypes.func.isRequired,
-
-    /**
-     * redux action to add a new user
-     * takes a single object with 'username' and 'password' properties
-     */
-    addUser: PropTypes.func.isRequired,
-};
 
 const mapStateToProps = (state) => {
     return {

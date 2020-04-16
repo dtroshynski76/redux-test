@@ -26,6 +26,28 @@ const styles = {
 };
 
 class Header extends React.PureComponent {
+    static propTypes = {
+        /**
+         * withStyles classes object
+         */
+        classes: PropTypes.object.isRequired,
+    
+        /**
+         * Callback function that fires when the user clicks the "Login" button
+         */
+        onLogin: PropTypes.func.isRequired,
+    
+        /**
+         * Callback function that fires when the user clicks the "Sign Up" button
+         */
+        onSignUp: PropTypes.func.isRequired,
+    
+        /**
+         * from redux - displays username in the header bar
+         */
+        signedInUsername: PropTypes.string,
+    };
+
     handleLogin = () => {
         const { onLogin } = this.props;
         onLogin();
@@ -77,28 +99,6 @@ class Header extends React.PureComponent {
         );
     }
 }
-
-Header.propTypes = {
-    /**
-     * withStyles classes object
-     */
-    classes: PropTypes.object.isRequired,
-
-    /**
-     * Callback function that fires when the user clicks the "Login" button
-     */
-    onLogin: PropTypes.func.isRequired,
-
-    /**
-     * Callback function that fires when the user clicks the "Sign Up" button
-     */
-    onSignUp: PropTypes.func.isRequired,
-
-    /**
-     * from redux - displays username in the header bar
-     */
-    signedInUsername: PropTypes.string,
-};
 
 const mapStateToProps = (state) => {
     return {
